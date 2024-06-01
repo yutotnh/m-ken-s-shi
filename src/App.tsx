@@ -8,8 +8,9 @@ import * as municipality from "./municipality";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import Container from "@mui/material/Container";
 
-export default function BasicSelect() {
+export default function Main() {
   const [prefectureInitial, setPrefectureInitial] = React.useState("");
   const [municipalityInitial, setMunicipalityInitial] = React.useState("");
 
@@ -107,6 +108,26 @@ export default function BasicSelect() {
           </List>
         </>
       )}
+      <Container maxWidth="sm" component="footer" sx={{ mt: 6 }}>
+        <Typography variant="body2" color="text.secondary" align="center">
+          {"© 2024 "}
+          {
+            <a
+              href="https://github.com/yutotnh"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              yutotnh
+            </a>
+          }
+          {" | "}
+          {
+            <a href="https://github.com/yutotnh/m-ken-s-shi">
+              ソースコード(GitHub)
+            </a>
+          }
+        </Typography>
+      </Container>
     </>
   );
 }
