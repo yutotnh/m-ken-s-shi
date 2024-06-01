@@ -69,25 +69,29 @@ def main():
             prefecture: dict = {
                 "name": csv_data["prefecture"][0:-1],
                 "suffix": csv_data["prefecture"][-1],
-                "rome": csv_data["prefecture_rome"].split(" ")[0],
-                "rome_suffix": csv_data["prefecture_rome"].split(" ")[-1],
+                "rome": csv_data["prefecture_rome"].split(" ")[0].capitalize(),
+                "rome_suffix": csv_data["prefecture_rome"].split(" ")[-1].capitalize(),
             }
 
             # 北海道の場合は特別処理
             # 北海道のローマ字はHOKKAIDOだが、M県など表現するツールの仕様上HOKKAI DOとなる
-            if prefecture["rome"] == "HOKKAIDO":
-                prefecture["rome"] = "HOKKAI"
-                prefecture["rome_suffix"] = "DO"
+            if prefecture["rome"].upper() == "HOKKAIDO".upper():
+                prefecture["rome"] = "HOKKAI".capitalize()
+                prefecture["rome_suffix"] = "DO".capitalize()
 
             municipality: dict = {
                 "name": get_municipality(csv_data["municipality"])[0:-1],
                 "suffix": get_municipality(csv_data["municipality"])[-1],
                 "rome": get_municipality_rome(
-                    csv_data["municipality"], csv_data["municipality_rome"]
-                ).split(" ")[0],
+                    csv_data["municipality"], csv_data["municipality_rome"].capitalize()
+                )
+                .split(" ")[0]
+                .capitalize(),
                 "rome_suffix": get_municipality_rome(
-                    csv_data["municipality"], csv_data["municipality_rome"]
-                ).split(" ")[-1],
+                    csv_data["municipality"], csv_data["municipality_rome"].capitalize()
+                )
+                .split(" ")[-1]
+                .capitalize(),
             }
 
             ward: dict = {
@@ -108,21 +112,29 @@ def main():
             if is_district(csv_data["municipality"]):
                 district["name"] = get_district(csv_data["municipality"])[0:-1]
                 district["suffix"] = "郡"
-                district["rome"] = get_district_rome(
-                    csv_data["municipality_rome"]
-                ).split(" ")[0]
-                district["rome_suffix"] = get_district_rome(
-                    csv_data["municipality_rome"]
-                ).split(" ")[-1]
+                district["rome"] = (
+                    get_district_rome(csv_data["municipality_rome"])
+                    .split(" ")[0]
+                    .capitalize()
+                )
+                district["rome_suffix"] = (
+                    get_district_rome(csv_data["municipality_rome"])
+                    .split(" ")[-1]
+                    .capitalize()
+                )
             elif is_ward(csv_data["municipality"]):
                 ward["name"] = get_ward(csv_data["municipality"])[0:-1]
                 ward["suffix"] = "区"
-                ward["rome"] = get_ward_rome(csv_data["municipality_rome"]).split(" ")[
-                    0
-                ]
-                ward["rome_suffix"] = get_ward_rome(
-                    csv_data["municipality_rome"]
-                ).split(" ")[-1]
+                ward["rome"] = (
+                    get_ward_rome(csv_data["municipality_rome"])
+                    .split(" ")[0]
+                    .capitalize()
+                )
+                ward["rome_suffix"] = (
+                    get_ward_rome(csv_data["municipality_rome"])
+                    .split(" ")[-1]
+                    .capitalize()
+                )
             elif is_island(csv_data["municipality"]):
                 # 既にget_municipality()関数で島を除いた市町村名を取得しているため、何もしない
                 pass
@@ -405,7 +417,7 @@ def get_municipality(prefecture: str) -> str:
     return prefecture
 
 
-def get_municipality_rome(prefecture, prefecture_rome: str) -> str:
+def get_municipality_rome(prefecture: str, prefecture_rome: str) -> str:
     """
     与えられた郡市区町村から、ローマ字読み市町村名を取得する
     引数には必ず市町村が含まれる郡市区町村名を渡すこと
@@ -431,6 +443,8 @@ def get_municipality_rome(prefecture, prefecture_rome: str) -> str:
     >>> get_municipality_rome("西八代郡　市川三郷町","NISHIYATSUSHIRO GUN ICHIKAWAMISATO")
     'ICHIKAWAMISATO CHO'
     """
+
+    prefecture_rome = prefecture_rome.upper()
 
     if "　" in prefecture:
         if "島　" in prefecture:

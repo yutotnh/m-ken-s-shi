@@ -5,6 +5,9 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import * as municipality from "./municipality";
+import Typography from "@mui/material/Typography";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 
 export default function BasicSelect() {
   const [prefectureInitial, setPrefectureInitial] = React.useState("");
@@ -21,59 +24,89 @@ export default function BasicSelect() {
 
   return (
     <>
-      <Box sx={{ minWidth: 120 }}>
-        <FormControl fullWidth>
-          <InputLabel id="select-prefecture-initial-label">都道府県</InputLabel>
-          <Select
-            labelId="select-prefecture-initial-label"
-            id="select-prefecture-initial"
-            value={prefectureInitial}
-            label="都道府県"
-            onChange={handlePrefectureInitialChange}
-          >
-            {municipality.getPrefectureInitials().map((initial, index) => (
-              <MenuItem key={index} value={initial}>
-                {initial}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
-      <Box sx={{ minWidth: 120 }}>
-        <FormControl fullWidth>
-          <InputLabel id="select-municipality-initial-label">
-            市区町村
-          </InputLabel>
-          <Select
-            labelId="select-municipality-initial-label"
-            id="select-municipality-initial"
-            value={municipalityInitial}
-            label="市区町村"
-            onChange={handleMunicipalityInitialChange}
-            disabled={!prefectureInitial} // Disable municipality selection until prefecture is selected
-          >
-            {municipality
-              .getMunicipalityInitials(prefectureInitial)
-              .map((initial, index) => (
+      <Typography variant="h1">M県S市</Typography>
+      <Box sx={{ display: "flex", gap: 2 }}>
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="select-prefecture-initial-label">
+              都道府県
+            </InputLabel>
+            <Select
+              labelId="select-prefecture-initial-label"
+              id="select-prefecture-initial"
+              value={prefectureInitial}
+              label="都道府県"
+              onChange={handlePrefectureInitialChange}
+            >
+              {municipality.getPrefectureInitials().map((initial, index) => (
                 <MenuItem key={index} value={initial}>
                   {initial}
                 </MenuItem>
               ))}
-          </Select>
-        </FormControl>
+            </Select>
+          </FormControl>
+        </Box>
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="select-municipality-initial-label">
+              市区町村
+            </InputLabel>
+            <Select
+              labelId="select-municipality-initial-label"
+              id="select-municipality-initial"
+              value={municipalityInitial}
+              label="市区町村"
+              onChange={handleMunicipalityInitialChange}
+              disabled={!prefectureInitial} // Disable municipality selection until prefecture is selected
+            >
+              {municipality
+                .getMunicipalityInitials(prefectureInitial)
+                .map((initial, index) => (
+                  <MenuItem key={index} value={initial}>
+                    {initial}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+        </Box>
       </Box>
-      <p>検索結果</p>
-      {municipality
-        .getMunicipalitiesByInitial(prefectureInitial, municipalityInitial)
-        .map((municipality, index) => (
-          <div key={index}>
-            {municipality.prefecture_name +
-              municipality.prefecture_suffix +
-              " " +
-              municipality.municipality_name +
-              municipality.municipality_suffix}
-          </div>
-        ))}{" "}
+      {(!prefectureInitial || !municipalityInitial) && (
+        <Typography component="div" sx={{ marginTop: 2 }}>
+          都道府県と市区町村を選択してください
+        </Typography>
+      )}
+      {prefectureInitial && municipalityInitial && (
+        <>
+          <Typography component="div" sx={{ marginTop: 2 }}>
+            検索結果
+          </Typography>
+          <List>
+            {municipality
+              .getMunicipalitiesByInitial(
+                prefectureInitial,
+                municipalityInitial,
+              )
+              .map((municipality, index) => (
+                <ListItem key={index}>
+                  {municipality.prefecture_name +
+                    municipality.prefecture_suffix +
+                    " " +
+                    municipality.municipality_name +
+                    municipality.municipality_suffix +
+                    " (" +
+                    municipality.prefecture_rome +
+                    " " +
+                    municipality.prefecture_rome_suffix +
+                    " " +
+                    municipality.municipality_rome +
+                    " " +
+                    municipality.municipality_rome_suffix +
+                    ")"}
+                </ListItem>
+              ))}
+          </List>
+        </>
+      )}
     </>
   );
 }
