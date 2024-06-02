@@ -39,11 +39,13 @@ export default function Main() {
               label="都道府県"
               onChange={handlePrefectureInitialChange}
             >
-              {municipality.getPrefectureInitials().map((initial, index) => (
-                <MenuItem key={index} value={initial}>
-                  {initial}
-                </MenuItem>
-              ))}
+              {Array.from(municipality.getPrefectureInitials()).map(
+                (initial: string, index: number) => (
+                  <MenuItem key={index} value={initial}>
+                    {initial}
+                  </MenuItem>
+                ),
+              )}
             </Select>
           </FormControl>
         </Box>
@@ -60,13 +62,13 @@ export default function Main() {
               onChange={handleMunicipalityInitialChange}
               disabled={!prefectureInitial} // Disable municipality selection until prefecture is selected
             >
-              {municipality
-                .getMunicipalityInitials(prefectureInitial)
-                .map((initial, index) => (
-                  <MenuItem key={index} value={initial}>
-                    {initial}
-                  </MenuItem>
-                ))}
+              {Array.from(
+                municipality.getMunicipalityInitials(prefectureInitial),
+              ).map((initial: string, index: number) => (
+                <MenuItem key={index} value={initial}>
+                  {initial}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>
@@ -82,29 +84,27 @@ export default function Main() {
             検索結果
           </Typography>
           <List>
-            {municipality
-              .getMunicipalitiesByInitial(
+            {Array.from(
+              municipality.getMunicipalitiesByInitial(
                 prefectureInitial,
                 municipalityInitial,
-              )
-              .map((municipality, index) => (
-                <ListItem key={index}>
-                  {municipality.prefecture_name +
-                    municipality.prefecture_suffix +
-                    " " +
-                    municipality.municipality_name +
-                    municipality.municipality_suffix +
-                    " (" +
-                    municipality.prefecture_rome +
-                    " " +
-                    municipality.prefecture_rome_suffix +
-                    " " +
-                    municipality.municipality_rome +
-                    " " +
-                    municipality.municipality_rome_suffix +
-                    ")"}
-                </ListItem>
-              ))}
+              ),
+            ).map((municipality: municipality.Municipality, index: number) => (
+              <ListItem key={index}>
+                {municipality.prefecture.name +
+                  municipality.prefecture.suffix +
+                  " " +
+                  municipality.municipality.name +
+                  municipality.municipality.suffix +
+                  " (" +
+                  municipality.prefecture?.rome +
+                  municipality.prefecture?.rome_suffix +
+                  " " +
+                  municipality.municipality?.rome +
+                  municipality.municipality?.rome_suffix +
+                  ")"}
+              </ListItem>
+            ))}
           </List>
         </>
       )}

@@ -1,32 +1,48 @@
-import prefectures from "./assets/prefectures.json";
 import municipalities from "./assets/municipalities.json";
 
+/**
+ * 都道府県のソートされた頭文字のセット(大文字)を取得する
+ *
+ * @remarks 都道府県の頭文字はよっぽどのことがない限り変わらないため、以下のセットを返す
+ * - A, C, E, F, G, H, I, K, M, N, O, S, T, W, Y
+ *
+ * @returns Set<string> - 都道府県の頭文字のセット(大文字)
+ */
 export function getPrefectureInitials() {
-  const initials: Set<string> = new Set();
+  const initials: Set<string> = new Set([
+    "A",
+    "C",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "K",
+    "M",
+    "N",
+    "O",
+    "S",
+    "T",
+    "W",
+    "Y",
+  ]);
 
-  for (const prefecture of prefectures.prefectures) {
-    initials.add(prefecture.rome.slice(0, 1));
-  }
-
-  const sortedInitials = Array.from(initials).sort();
-
-  return sortedInitials;
+  return initials;
 }
 
-export function getPrefecturesByInitial(initial: string) {
-  const prefecturesByInitial: string[] = [];
-
-  for (const prefecture of prefectures.prefectures) {
-    if (prefecture.rome.slice(0, 1) === initial) {
-      prefecturesByInitial.push(prefecture.name);
-    }
-  }
-
-  return prefecturesByInitial;
-}
-
+/**
+ * 都道府県の頭文字からソートされた市区町村の頭文字のセット(大文字)を取得する
+ *
+ * @remarks 引数のprefectureInitialは大文字・小文字は区別せず、複数文字の場合は先頭の文字を使用する
+ *
+ * @param prefectureInitial - 都道府県の頭文字
+ * @returns 市区町村の頭文字のセット(大文字)
+ */
 export function getMunicipalityInitials(prefectureInitial: string) {
   const initials: Set<string> = new Set();
+
+  // prefectureInitialが複数文字の場合は先頭の文字を使用する
+  prefectureInitial = prefectureInitial.slice(0, 1);
 
   for (const municipality of municipalities.municipalities) {
     if (
@@ -37,24 +53,44 @@ export function getMunicipalityInitials(prefectureInitial: string) {
     }
   }
 
-  const sortedInitials = Array.from(initials).sort();
+  const sortedInitials = new Set(Array.from(initials).sort());
 
   return sortedInitials;
 }
 
+export interface Municipality {
+  prefecture: {
+    name: string;
+    suffix: string;
+    rome: string;
+    rome_suffix: string;
+  };
+  municipality: {
+    name: string;
+    suffix: string;
+    rome: string;
+    rome_suffix: string;
+  };
+}
+
+/**
+ * 都道府県の頭文字と市区町村の頭文字に一致する市区町村の情報を取得する
+ *
+ * @remarks 引数のprefectureInitialとmunicipalityInitialは大文字・小文字は区別せず、複数文字の場合は先頭の文字を使用する
+ *
+ * @param prefectureInitial 都道府県の頭文字
+ * @param municipalityInitial 市区町村の頭文字
+ * @returns 都道府県の頭文字と市区町村の頭文字に一致する市区町村の情報
+ */
 export function getMunicipalitiesByInitial(
   prefectureInitial: string,
   municipalityInitial: string,
 ) {
-  const municipalitiesByInitial = [];
+  const municipalitiesByInitial: Set<Municipality> = new Set();
 
-  let previewPrefecture: {
-    prefecture_name: string;
-    municipality_name: string;
-  } = {
-    prefecture_name: "",
-    municipality_name: "",
-  };
+  // prefectureInitialとmunicipalityInitialが複数文字の場合は先頭の文字を使用する
+  prefectureInitial = prefectureInitial.slice(0, 1);
+  municipalityInitial = municipalityInitial.slice(0, 1);
 
   for (const municipality of municipalities.municipalities) {
     if (
@@ -64,28 +100,11 @@ export function getMunicipalitiesByInitial(
         municipalityInitial.toUpperCase()
     ) {
       const municipality_infomation = {
-        prefecture_name: municipality.prefecture.name,
-        prefecture_suffix: municipality.prefecture.suffix,
-        prefecture_rome: municipality.prefecture.rome,
-        prefecture_rome_suffix: municipality.prefecture.rome_suffix,
-        municipality_name: municipality.municipality.name,
-        municipality_suffix: municipality.municipality.suffix,
-        municipality_rome: municipality.municipality.rome,
-        municipality_rome_suffix: municipality.municipality.rome_suffix,
+        prefecture: municipality.prefecture,
+        municipality: municipality.municipality,
       };
 
-      if (
-        municipality.prefecture.rome === previewPrefecture.prefecture_name &&
-        municipality.municipality.rome === previewPrefecture.municipality_name
-      ) {
-        continue;
-      } else {
-        municipalitiesByInitial.push(municipality_infomation);
-        previewPrefecture = {
-          prefecture_name: municipality.prefecture.rome,
-          municipality_name: municipality.municipality.rome,
-        };
-      }
+      municipalitiesByInitial.add(municipality_infomation);
     }
   }
 
