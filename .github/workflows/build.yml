@@ -1,7 +1,6 @@
 name: "Build"
 on:
   push:
-  pull_request:
   workflow_call:
   workflow_dispatch:
 
@@ -9,8 +8,7 @@ jobs:
   build:
     strategy:
       matrix:
-        # Bun does not support Windows
-        os: [macos-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
