@@ -86,7 +86,7 @@ export function getMunicipalitiesByInitial(
   prefectureInitial: string,
   municipalityInitial: string,
 ) {
-  const municipalitiesByInitial: Set<Municipality> = new Set();
+  const municipalitiesByInitial: Municipality[] = [];
 
   // prefectureInitialとmunicipalityInitialが複数文字の場合は先頭の文字を使用する
   prefectureInitial = prefectureInitial.slice(0, 1);
@@ -104,9 +104,20 @@ export function getMunicipalitiesByInitial(
         municipality: municipality.municipality,
       };
 
-      municipalitiesByInitial.add(municipality_information);
+      municipalitiesByInitial.push(municipality_information);
     }
   }
 
-  return municipalitiesByInitial;
+  const uniqueMunicipalitiesByInitial = new Set(
+    municipalitiesByInitial.filter(
+      (municipality, index, self) =>
+        self.findIndex(
+          (m) =>
+            m.prefecture.rome === municipality.prefecture.rome &&
+            m.municipality.rome === municipality.municipality.rome,
+        ) === index,
+    ),
+  );
+
+  return uniqueMunicipalitiesByInitial;
 }

@@ -143,6 +143,69 @@ it("getMunicipalitiesByInitial", () => {
     ]),
   );
 
+  // 行政区が含まれる市区町村の検索
+  const cCInitial = municipalities.getMunicipalitiesByInitial("C", "C");
+  expect(cCInitial).toEqual(
+    new Set([
+      {
+        prefecture: {
+          name: "千葉",
+          suffix: "県",
+          rome: "Chiba",
+          rome_suffix: "Ken",
+        },
+        municipality: {
+          name: "千葉",
+          suffix: "市",
+          rome: "Chiba",
+          rome_suffix: "Shi",
+        },
+      },
+      {
+        prefecture: {
+          name: "千葉",
+          suffix: "県",
+          rome: "Chiba",
+          rome_suffix: "Ken",
+        },
+        municipality: {
+          name: "銚子",
+          suffix: "市",
+          rome: "Choshi",
+          rome_suffix: "Shi",
+        },
+      },
+      {
+        prefecture: {
+          name: "千葉",
+          suffix: "県",
+          rome: "Chiba",
+          rome_suffix: "Ken",
+        },
+        municipality: {
+          name: "長生",
+          suffix: "村",
+          rome: "Chosei",
+          rome_suffix: "Mura",
+        },
+      },
+      {
+        prefecture: {
+          name: "千葉",
+          suffix: "県",
+          rome: "Chiba",
+          rome_suffix: "Ken",
+        },
+        municipality: {
+          name: "長南",
+          suffix: "町",
+          rome: "Chonan",
+          rome_suffix: "Machi",
+        },
+      },
+    ]),
+  );
+
   // 以下の条件で同時に検索
   // - 都道府県、市区町村の頭文字が大文字
   // - 都道府県、市区町村の文字列が複数文字
