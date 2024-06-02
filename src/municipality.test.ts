@@ -149,7 +149,7 @@ it("getMunicipalitiesByInitial", () => {
   // - 返ってくる結果が複数の県にまたがる
   const lowerInitials = municipalities.getMunicipalitiesByInitial(
     "none",
-    "gigant",
+    "giant",
   );
   expect(lowerInitials).toEqual(
     new Set([

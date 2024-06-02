@@ -99,12 +99,12 @@ export function getMunicipalitiesByInitial(
       municipality.municipality.rome.slice(0, 1).toUpperCase() ===
         municipalityInitial.toUpperCase()
     ) {
-      const municipality_infomation = {
+      const municipality_information = {
         prefecture: municipality.prefecture,
         municipality: municipality.municipality,
       };
 
-      municipalitiesByInitial.add(municipality_infomation);
+      municipalitiesByInitial.add(municipality_information);
     }
   }
 
