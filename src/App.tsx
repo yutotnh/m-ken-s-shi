@@ -25,8 +25,16 @@ export default function Main() {
 
   return (
     <>
-      <Typography variant="h1">M県S市</Typography>
-      <Box sx={{ display: "flex", gap: 2 }}>
+      <Typography variant="h1" align="center">
+        M県S市
+      </Typography>
+      <Typography variant="body2" color="text.secondary" align="center">
+        {"都道府県・市区町村データ: "}
+        <a href="https://www.post.japanpost.jp/zipcode/dl/roman-zip.html">
+          日本郵便 KEN_ALL_ROME.CSV (2023年6月現在版)
+        </a>
+      </Typography>
+      <Box sx={{ display: "flex", gap: 2, justifyContent: "center", m: 2 }}>
         <Box sx={{ minWidth: 120 }}>
           <FormControl fullWidth>
             <InputLabel id="select-prefecture-initial-label">
@@ -73,41 +81,47 @@ export default function Main() {
           </FormControl>
         </Box>
       </Box>
-      {(!prefectureInitial || !municipalityInitial) && (
-        <Typography component="div" sx={{ marginTop: 2 }}>
-          都道府県と市区町村を選択してください
-        </Typography>
-      )}
-      {prefectureInitial && municipalityInitial && (
-        <>
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        {(!prefectureInitial || !municipalityInitial) && (
           <Typography component="div" sx={{ marginTop: 2 }}>
-            検索結果
+            都道府県と市区町村を選択してください
           </Typography>
-          <List>
-            {Array.from(
-              municipality.getMunicipalitiesByInitial(
-                prefectureInitial,
-                municipalityInitial,
-              ),
-            ).map((municipality: municipality.Municipality, index: number) => (
-              <ListItem key={index}>
-                {municipality.prefecture.name +
-                  municipality.prefecture.suffix +
-                  " " +
-                  municipality.municipality.name +
-                  municipality.municipality.suffix +
-                  " (" +
-                  municipality.prefecture?.rome +
-                  municipality.prefecture?.rome_suffix +
-                  " " +
-                  municipality.municipality?.rome +
-                  municipality.municipality?.rome_suffix +
-                  ")"}
-              </ListItem>
-            ))}
-          </List>
-        </>
-      )}
+        )}
+        {prefectureInitial && municipalityInitial && (
+          <>
+            <Typography component="div" sx={{ marginTop: 2 }}>
+              検索結果
+            </Typography>
+            <List>
+              {Array.from(
+                municipality.getMunicipalitiesByInitial(
+                  prefectureInitial,
+                  municipalityInitial,
+                ),
+              ).map(
+                (municipality: municipality.Municipality, index: number) => (
+                  <ListItem key={index}>
+                    {municipality.prefecture.name +
+                      municipality.prefecture.suffix +
+                      " " +
+                      municipality.municipality.name +
+                      municipality.municipality.suffix +
+                      " (" +
+                      municipality.prefecture?.rome +
+                      " " +
+                      municipality.prefecture?.rome_suffix +
+                      " " +
+                      municipality.municipality?.rome +
+                      " " +
+                      municipality.municipality?.rome_suffix +
+                      ")"}
+                  </ListItem>
+                ),
+              )}
+            </List>
+          </>
+        )}
+      </Box>
       <Container maxWidth="sm" component="footer" sx={{ mt: 6 }}>
         <Typography variant="body2" color="text.secondary" align="center">
           {"© 2024 "}
